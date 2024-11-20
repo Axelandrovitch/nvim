@@ -16,7 +16,6 @@ require("lazy").setup({
   require("plugins.colorscheme"),
   require("plugins.formatting"),
   require("plugins.autopairs"),
-  require("plugins.terminal"),
 
   -- Interface
   { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" }, config = require("plugins.telescope") },
