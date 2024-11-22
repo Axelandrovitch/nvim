@@ -1,35 +1,49 @@
--- lua/config/lsp.lua
 local lspconfig = require("lspconfig")
+local mason_lspconfig = require("mason-lspconfig")
+local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
--- Variable pour stocker l'état d'activation
-local clangd_active = false
+-- Capabilities pour la complétion
+local capabilities = cmp_nvim_lsp.default_capabilities()
 
--- Fonction pour activer ou désactiver clangd
-function ToggleClangd()
-  if clangd_active then
-    -- Désactiver clangd
-    vim.lsp.stop_client(vim.lsp.get_active_clients())
-    clangd_active = false
-    print("clangd désactivé")
-  else
-    -- Activer clangd
-    lspconfig.clangd.setup({
+-- Configuration générique pour les serveurs LSP
+mason_lspconfig.setup_handlers({
+  function(server_name)
+    lspconfig[server_name].setup({
+      capabilities = capabilities,
       on_attach = function(client, bufnr)
-        -- Mappages LSP spécifiques
-        local opts = { noremap = true, silent = true }
-        vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
-        vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-        vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-      end,
+        -- Mappages LSP génériques
+        local opts = { noremap = true, silent = true, buffer = bufnr }
+        
+        -- Navigation
+        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+        vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+        vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, opts)
+        
+        -- Information et aide
+        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+        vim.keymap.set("n", "<leader>k", vim.lsp.buf.signature_help, opts)
+        
+        -- Refactoring et actions
+        vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+        vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+        
+        -- Diagnostics
+        vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
+        vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+        vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+      end
     })
-    clangd_active = true
-    print("clangd activé")
   end
-end
+})
 
--- Créer une commande pour basculer clangd
-vim.api.nvim_create_user_command('ToggleClangd', ToggleClangd, {})
-
--- Associer un raccourci pour basculer clangd
-vim.api.nvim_set_keymap("n", "<leader>lc", ":ToggleClangd<CR>", { noremap = true, silent = true })
-
+-- Configuration spécifique pour certains serveurs si nécessaire
+lspconfig.lua_ls.setup {
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { 'vim' }
+      }
+    }
+  }
+}

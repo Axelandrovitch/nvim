@@ -1,7 +1,7 @@
 vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
-require("core.options")
 require("plugins")
+require("core.options")
 require("config.lsp")
 
 -- Définir Espace comme la touche leader
