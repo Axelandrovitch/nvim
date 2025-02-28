@@ -9,7 +9,7 @@ return function()
       enable = true,  -- Activer la coloration syntaxique
     },
     indent = {
-      enable = true,  -- Activer l'indentation automatique avec Treesitter
+      enable = false,  -- Activer l'indentation automatique avec Treesitter
     },
     -- Optionnel : Tu peux activer plus d'options ici (autres modules de Treesitter)
   })
