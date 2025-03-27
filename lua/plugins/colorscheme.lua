@@ -1,23 +1,51 @@
 -- lua/plugins/colorscheme.lua
 return {
   {
-    "catppuccin/nvim",
-    name = "catppuccin",
+    "AlexvZyl/nordic.nvim",
+    name = "nordic",
     priority = 1000,
     config = function()
-      require("catppuccin").setup({
-        flavour = "mocha", -- Choisir entre "latte", "frappe", "macchiato", "mocha"
-        transparent_background = false,
-        integrations = {
-          treesitter = true,
-          telescope = true,
-          -- Autres intégrations si besoin
+      require("nordic").setup({
+        bold_keywords = false,
+        italic_comments = true,
+        transparent = {
+          bg = false,
+          float = false,
         },
+        bright_border = false,
+        reduced_blue = true,
+        swap_backgrounds = false,
+        cursorline = {
+          bold = false,
+          bold_number = true,
+          theme = "dark",
+          blend = 0.85,
+        },
+        noice = {
+          style = "classic",
+        },
+        telescope = {
+          style = "flat",
+        },
+        leap = {
+          dim_backdrop = false,
+        },
+        ts_context = {
+          dark_background = true,
+        },
+        on_highlight = function(highlights, palette)
+          highlights.TelescopePromptTitle = {
+            fg = palette.red.bright,
+            bg = palette.green.base,
+            italic = true,
+            underline = true,
+            sp = palette.yellow.dim,
+            undercurl = false,
+          }
+        end,
       })
-
-      -- Activer le thème immédiatement après la configuration
-      vim.cmd.colorscheme("catppuccin")
+      -- Appliquer le thème Nordic
+      vim.cmd("colorscheme nordic")
     end,
   }
 }
-

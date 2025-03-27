@@ -2,7 +2,10 @@ vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 require("plugins")
 require("core.options")
+require("core.keymaps")
 require("config.lsp")
+
+vim.o.termguicolors = true
 
 -- Définir Espace comme la touche leader
 
